@@ -6,7 +6,7 @@ window.addEventListener('DOMContentLoaded', function () {
       (data) => {
         showCard(data);
         showFilter(data);
-        filter();
+        filter(data);
       },
       (error) => {
         console.error(error);
@@ -134,8 +134,9 @@ window.addEventListener('DOMContentLoaded', function () {
     }
   };
 
-  const filter = () => {
+  const filter = (data) => {
     const filterWrap = document.querySelector('.filter__wrap');
+    const dataObj = data;
     let filterArray = [];
 
     filterWrap.addEventListener('click', (event) => {
@@ -168,31 +169,26 @@ window.addEventListener('DOMContentLoaded', function () {
           item.remove();
         });
 
-        setTimeout(function () {
-          getData(
-            (data) => {
-              loaded.remove();
-              if (filterArray.length > 0 && filterArray !== []) {
-                let checkArray = [];
+        if (filterArray.length > 0 && filterArray !== []) {
+          let checkArray = [];
+          let uniqueArray = [];
 
-                data.forEach((item) => {
-                  filterArray.forEach((filterItem) => {
-                    if ((item.actors && item.actors === filterItem) || (item.movies && item.movies.includes(filterItem))) {
-                      checkArray.push(...[item]);
-                      checkArray = Array.from(new Set(checkArray));
-                      console.log(checkArray);
-                      if (checkArray.length > 0 && checkArray !== []) showCard(checkArray);
-                    }
-                  });
+          dataObj.forEach((item) => {
+            filterArray.forEach((filterItem) => {
+              if ((item.actors && item.actors === filterItem) || (item.movies && item.movies.includes(filterItem))) {
+                checkArray.push(...[item]);
+                uniqueArray = checkArray.filter(function (item, pos) {
+                  return checkArray.indexOf(item) == pos;
                 });
-              } else {
-                showCard(data);
               }
-            },
-            (error) => {
-              console.error(error);
             });
-        }, 1500);
+          });
+
+          setTimeout(function () {
+            loaded.remove();
+            showCard(uniqueArray);
+          }, 1500);
+        }
 
         scrollTop();
       }
