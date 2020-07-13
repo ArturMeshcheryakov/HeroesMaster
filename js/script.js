@@ -169,26 +169,29 @@ window.addEventListener('DOMContentLoaded', function () {
           item.remove();
         });
 
-        if (filterArray.length > 0 && filterArray !== []) {
-          let checkArray = [];
-          let uniqueArray = [];
+        setTimeout(function () {
+          if (filterArray.length > 0 && filterArray !== []) {
+            let checkArray = [];
+            let uniqueArray = [];
 
-          dataObj.forEach((item) => {
-            filterArray.forEach((filterItem) => {
-              if ((item.actors && item.actors === filterItem) || (item.movies && item.movies.includes(filterItem))) {
-                checkArray.push(...[item]);
-                uniqueArray = checkArray.filter(function (item, pos) {
-                  return checkArray.indexOf(item) == pos;
-                });
-              }
-            });
-          });
-
-          setTimeout(function () {
             loaded.remove();
+            dataObj.forEach((item) => {
+              filterArray.forEach((filterItem) => {
+                if ((item.actors && item.actors === filterItem) || (item.movies && item.movies.includes(filterItem))) {
+                  checkArray.push(...[item]);
+                  uniqueArray = checkArray.filter(function (item, pos) {
+                    return checkArray.indexOf(item) == pos;
+                  });
+                }
+              });
+            });
+
             showCard(uniqueArray);
-          }, 1500);
-        }
+          } else {
+            loaded.remove();
+            showCard(dataObj);
+          }
+        }, 1500);
 
         scrollTop();
       }
